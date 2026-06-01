@@ -3,7 +3,9 @@ const { engine } = require('express-handlebars');
 const path = require('path');
 
 const app = express();
-const port = 3000;
+
+// Railway provides PORT automatically
+const PORT = process.env.PORT || 3000;
 
 // Handlebars setup
 app.engine('handlebars', engine());
@@ -16,6 +18,7 @@ app.use(express.static(path.join(__dirname, 'static')));
 // Routes
 app.use('/', require('./routes/blog'));
 
-app.listen(port, () => {
-    console.log(`Blog app listening on http://localhost:${port}`);
+// Start server
+app.listen(PORT, () => {
+    console.log(`Blog app listening on port ${PORT}`);
 });
