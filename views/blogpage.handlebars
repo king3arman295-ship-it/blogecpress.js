@@ -1,109 +1,220 @@
-<div class="post-card">
+<div class="max-w-4xl mx-auto">
 
-    <h2>{{title}}</h2>
-    <p>{{content}}</p>
+<!-- Blog Card -->
+<div class="bg-white rounded-3xl shadow-lg overflow-hidden">
 
-    <hr>
+    <!-- Header -->
+    <div class="p-8 border-b">
 
-    <!-- COMMENT FORM -->
-    <h5>Add Comment</h5>
+        <div class="flex items-center gap-3 mb-4">
 
-    {{#if user}}
-
-        <form action="/blogpost/{{slug}}/comment" method="POST">
-
-            <div class="mb-3">
-                <textarea
-                    name="comment"
-                    class="form-control"
-                    placeholder="Write your comment..."
-                    required></textarea>
+            <div class="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold">
+                A
             </div>
 
-            <button class="btn btn-primary btn-sm">
-                Post Comment
-            </button>
-
-        </form>
-
-    {{else}}
-
-        <p class="text-danger">
-            Please login to comment
-        </p>
-
-    {{/if}}
-
-    <hr>
-
-    <!-- COMMENTS LIST -->
-    <h5>Comments</h5>
-
-    {{#if comments.length}}
-
-   {{#each comments}}
-
-<div class="border rounded p-3 mb-3">
-
-    <strong>{{this.userEmail}}</strong>
-
-    <p>{{this.text}}</p>
-
-    <!-- Reply Form -->
-
-    {{#if ../user}}
-
-    <form
-        action="/blogpost/{{../slug}}/reply/{{this._id}}"
-        method="POST">
-
-        <input
-            type="text"
-            name="reply"
-            class="form-control mb-2"
-            placeholder="Reply...">
-
-        <button
-            class="btn btn-sm btn-secondary">
-
-            Reply
-
-        </button>
-
-    </form>
-
-    {{/if}}
-
-    <!-- Replies -->
-
-    <div class="ms-4 mt-3">
-
-        {{#each this.replies}}
-
-            <div class="border-start ps-3 mb-2">
-
-                <strong>
-                    {{this.userEmail}}
-                </strong>
-
-                <p class="mb-0">
-                    {{this.text}}
-                </p>
-
+            <div>
+                <h6 class="font-semibold mb-0">Admin</h6>
+                <small class="text-gray-500">Blog Post</small>
             </div>
 
-        {{/each}}
+        </div>
+
+        <h1 class="text-4xl font-bold text-gray-800">
+            {{title}}
+        </h1>
+
+    </div>
+
+    <!-- Content -->
+    <div class="p-8">
+
+        <div class="text-lg leading-8 text-gray-700 whitespace-pre-line">
+            {{content}}
+        </div>
 
     </div>
 
 </div>
 
-{{/each}}
+
+<!-- Comment Form -->
+<div class="bg-white rounded-3xl shadow-lg mt-8 p-8">
+
+    <h3 class="text-2xl font-bold mb-4">Leave a Comment</h3>
+
+    {{#if user}}
+
+    <!-- Emoji Buttons -->
+    <div class="flex gap-2 mb-3 flex-wrap">
+
+        <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">😀</button>
+        <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">😂</button>
+        <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">😍</button>
+        <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">🔥</button>
+        <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">❤️</button>
+        <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">👍</button>
+
+    </div>
+
+    <form action="/blogpost/{{slug}}/comment" method="POST">
+
+        <textarea
+            id="commentBox"
+            name="comment"
+            rows="4"
+            class="w-full border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Write your thoughts... 😊"
+            required></textarea>
+
+        <button
+            type="submit"
+            class="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl">
+
+            Post Comment
+
+        </button>
+
+    </form>
 
     {{else}}
 
-        <p class="text-muted">No comments yet</p>
+    <div class="bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl">
+        Please login to comment.
+    </div>
 
     {{/if}}
 
 </div>
+
+
+<!-- Comments -->
+<div class="mt-8">
+
+    <h3 class="text-3xl font-bold mb-6">Comments</h3>
+
+    {{#if comments.length}}
+
+        {{#each comments}}
+
+        <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
+
+            <!-- Comment -->
+            <div class="flex items-start gap-3">
+
+                <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center">
+                    👤
+                </div>
+
+                <div class="flex-1">
+
+                    <h6 class="font-semibold text-gray-800">
+                        {{this.userEmail}}
+                    </h6>
+
+                    <p class="mt-2 text-gray-700">
+                        {{this.text}}
+                    </p>
+
+                </div>
+
+            </div>
+
+            <!-- Reply Form -->
+            {{#if ../user}}
+
+            <form action="/blogpost/{{../slug}}/reply/{{this._id}}" method="POST" class="mt-4 ml-12">
+
+                <!-- Emoji Row -->
+                <div class="flex gap-2 mb-2 flex-wrap">
+
+                    <button type="button" class="reply-emoji bg-gray-100 px-2 py-1 rounded">😀</button>
+                    <button type="button" class="reply-emoji bg-gray-100 px-2 py-1 rounded">😂</button>
+                    <button type="button" class="reply-emoji bg-gray-100 px-2 py-1 rounded">😍</button>
+                    <button type="button" class="reply-emoji bg-gray-100 px-2 py-1 rounded">🔥</button>
+                    <button type="button" class="reply-emoji bg-gray-100 px-2 py-1 rounded">❤️</button>
+                    <button type="button" class="reply-emoji bg-gray-100 px-2 py-1 rounded">👍</button>
+
+                </div>
+
+                <div class="flex gap-2">
+
+                    <input
+                        type="text"
+                        name="reply"
+                        class="flex-1 border rounded-xl px-4 py-2 reply-box"
+                        placeholder="Reply to comment... 😊">
+
+                    <button class="bg-slate-700 text-white px-4 rounded-xl">
+                        Reply
+                    </button>
+
+                </div>
+
+            </form>
+
+            {{/if}}
+
+            <!-- Replies -->
+            {{#if this.replies.length}}
+
+            <div class="ml-12 mt-6 space-y-3">
+
+                {{#each this.replies}}
+
+                <div class="bg-slate-50 border-l-4 border-indigo-500 p-4 rounded-r-xl">
+
+                    <strong class="text-indigo-600">
+                        {{this.userEmail}}
+                    </strong>
+
+                    <p class="mt-1 text-gray-700">
+                        {{this.text}}
+                    </p>
+
+                </div>
+
+                {{/each}}
+
+            </div>
+
+            {{/if}}
+
+        </div>
+
+        {{/each}}
+
+    {{else}}
+
+        <div class="bg-white rounded-2xl shadow p-6 text-center text-gray-500">
+            No comments yet. Be the first to comment!
+        </div>
+
+    {{/if}}
+
+</div>
+
+</div>
+
+<!-- SCRIPT -->
+<script>
+
+// COMMENT EMOJIS
+const commentBox = document.getElementById("commentBox");
+
+document.querySelectorAll(".emoji-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        commentBox.value += btn.innerText;
+        commentBox.focus();
+    });
+});
+
+// REPLY EMOJIS
+document.querySelectorAll(".reply-emoji").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const input = btn.closest("form").querySelector(".reply-box");
+        input.value += btn.innerText;
+        input.focus();
+    });
+});
+
+</script>
