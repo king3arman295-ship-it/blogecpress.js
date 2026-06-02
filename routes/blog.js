@@ -9,89 +9,71 @@ const { verifyToken, isAdmin } = require('../middleware/auth');
 const router = express.Router();
 
 
+// ======================
 // HOME
+// ======================
 router.get('/', (req, res) => {
-    res.render('home');
+    res.render('home', { user: req.user });
 });
 
 
+// ======================
 // BLOG LIST
+// ======================
 router.get('/blog', async (req, res) => {
     try {
-
         const blogs = await Blog.find().lean();
 
         res.render('bloghome', {
-            blogs
+            blogs,
+            user: req.user || null
         });
 
     } catch (err) {
-
         console.log(err);
         res.status(500).send('Server Error');
-
     }
 });
 
 
-// SINGLE BLOG
+// ======================
+// SINGLE BLOG PAGE
+// ======================
 router.get('/blogpost/:slug', async (req, res) => {
     try {
 
-        const blog = await Blog.findOne({
-            slug: req.params.slug
-        }).lean();
+        const blog = await Blog.findOne({ slug: req.params.slug }).lean();
 
-        if (!blog) {
-            return res.send('Blog not found');
-        }
+        if (!blog) return res.send("Blog not found");
 
         res.render('blogpage', {
             title: blog.title,
             content: blog.content,
             slug: blog.slug,
-            comments: blog.comments
+            comments: blog.comments || [],
+            user: req.user || null
         });
 
     } catch (err) {
-
         console.log(err);
-        res.status(500).send('Server Error');
-
+        res.status(500).send("Server Error");
     }
 });
 
 
-// ADD COMMENT
-router.post('/blogpost/:slug/comment', async (req, res) => {
+// ======================
+// ADD COMMENT (FIXED)
+// ======================
+router.post('/blogpost/:slug/comment', verifyToken, async (req, res) => {
     try {
 
-        const token = req.cookies.token;
+        const user = await User.findById(req.user.id);
 
-        if (!token) {
-            return res.redirect('/login');
-        }
+        if (!user) return res.redirect('/login');
 
-        const decoded = jwt.verify(
-            token,
-            'secretkey123'
-        );
+        const blog = await Blog.findOne({ slug: req.params.slug });
 
-        const user = await User.findById(
-            decoded.id
-        );
-
-        if (!user) {
-            return res.redirect('/login');
-        }
-
-        const blog = await Blog.findOne({
-            slug: req.params.slug
-        });
-
-        if (!blog) {
-            return res.send('Blog not found');
-        }
+        if (!blog) return res.send("Blog not found");
 
         blog.comments.push({
             userEmail: user.email,
@@ -100,62 +82,109 @@ router.post('/blogpost/:slug/comment', async (req, res) => {
 
         await blog.save();
 
-        res.redirect(
-            `/blogpost/${req.params.slug}`
-        );
+        res.redirect(`/blogpost/${req.params.slug}`);
 
     } catch (err) {
-
         console.log(err);
-        res.send('Error posting comment');
-
+        res.send("Error posting comment");
     }
 });
 
 
+// ======================
 // ADMIN PAGE
-router.get(
-    '/admin',
-    verifyToken,
-    isAdmin,
-    (req, res) => {
+// ======================
+router.get('/admin', verifyToken, isAdmin, (req, res) => {
+    res.render('admin', { user: req.user });
+});
 
-        res.render('admin');
+router.post('/blogpost/:slug/like', async (req, res) => {
+
+    try {
+
+        const blog = await Blog.findOne({
+            slug: req.params.slug
+        });
+
+        if (!blog) {
+            return res.send('Blog not found');
+        }
+
+        blog.likes += 1;
+
+        await blog.save();
+
+        res.redirect('/blog');
+
+    } catch (err) {
+
+        console.log(err);
+        res.send('Like failed');
 
     }
-);
 
-
-// ADD BLOG
+});
 router.post(
-    '/admin/add-blog',
+    '/blogpost/:slug/reply/:commentId',
     verifyToken,
-    isAdmin,
     async (req, res) => {
 
         try {
 
-            const {
-                title,
-                slug,
-                content
-            } = req.body;
+            const user = await User.findById(
+                req.user.id
+            );
 
-            await Blog.create({
-                title,
-                slug,
-                content
+            const blog = await Blog.findOne({
+                slug: req.params.slug
             });
 
-            res.redirect('/blog');
+            const comment = blog.comments.id(
+                req.params.commentId
+            );
+
+            comment.replies.push({
+                userEmail: user.email,
+                text: req.body.reply
+            });
+
+            await blog.save();
+
+            res.redirect(
+                `/blogpost/${req.params.slug}`
+            );
 
         } catch (err) {
 
             console.log(err);
-            res.send('Error creating blog');
+            res.send('Reply failed');
 
         }
+
     }
 );
+
+// ======================
+// ADD BLOG
+// ======================
+router.post('/admin/add-blog', verifyToken, isAdmin, async (req, res) => {
+    try {
+
+        const { title, slug, content } = req.body;
+
+        await Blog.create({
+            title,
+            slug,
+            content,
+            comments: []
+        });
+
+        res.redirect('/blog');
+
+    } catch (err) {
+        console.log(err);
+        res.send("Error creating blog");
+    }
+});
 
 module.exports = router;

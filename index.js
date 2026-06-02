@@ -3,24 +3,27 @@ const { engine } = require('express-handlebars');
 const path = require('path');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
+
+// ✅ ADDED THIS (as you requested)
+const { verifyToken } = require('./middleware/auth');
+
 require('dotenv').config();
 
 const app = express();
-
 const PORT = process.env.PORT || 3000;
 
-// MongoDB Connection
+// DB
 mongoose.connect(process.env.MONGO_URI)
-.then(() => {
-    console.log('MongoDB Connected');
-    console.log('Database:', mongoose.connection.db.databaseName);
-})
-.catch((err) => {
-    console.error('MongoDB Connection Error:', err);
-});
+.then(() => console.log("MongoDB Connected"))
+.catch(err => console.log(err));
 
-// Handlebars Setup
-app.engine('handlebars', engine());
+// Handlebars
+app.engine('handlebars', engine({
+    helpers: {
+        eq: (a, b) => a === b
+    }
+}));
+
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -29,13 +32,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
-// Static Files
+// ✅ ADDED HERE (after cookieParser as you said)
+app.use(verifyToken);
+
+// Static
 app.use(express.static(path.join(__dirname, 'static')));
 
 // Routes
 app.use('/', require('./routes/blog'));
 app.use('/', require('./routes/auth'));
 
+// Start
 app.listen(PORT, () => {
-    console.log(`Blog app listening on port ${PORT}`);
+    console.log(`Server running on ${PORT}`);
 });

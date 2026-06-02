@@ -1,35 +1,53 @@
-<div class="container">
-    <h1>Register</h1>
+<div class="max-w-md mx-auto mt-12">
 
-    <form action="/register" method="POST">
+    <div class="bg-white rounded-3xl shadow-lg p-8">
 
-        <div class="mb-3">
-            <label>Email</label>
-            <input
-                type="email"
-                name="email"
-                class="form-control"
-                required>
-        </div>
+        <h1 class="text-3xl font-bold text-center mb-6">
+            Create Account
+        </h1>
 
-        <div class="mb-3">
-            <label>Password</label>
-            <input
-                type="password"
-                name="password"
-                class="form-control"
-                required>
-        </div>
+        <form action="/register" method="POST">
 
+            <div class="mb-4">
 
+                <label class="block mb-2 font-medium">
+                    Email
+                </label>
 
-        <button
-            type="submit"
-            class="btn btn-success">
+                <input
+                    type="email"
+                    name="email"
+                    class="w-full border rounded-xl p-3"
+                    placeholder="Enter email"
+                    required>
 
-            Register
+            </div>
 
-        </button>
+            <div class="mb-6">
 
-    </form>
+                <label class="block mb-2 font-medium">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    name="password"
+                    class="w-full border rounded-xl p-3"
+                    placeholder="Create password"
+                    required>
+
+            </div>
+
+            <button
+                type="submit"
+                class="w-full bg-green-600 text-white p-3 rounded-xl hover:bg-green-700">
+
+                Register
+
+            </button>
+
+        </form>
+
+    </div>
+
 </div>

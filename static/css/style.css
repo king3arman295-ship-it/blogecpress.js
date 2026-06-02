@@ -1,0 +1,46 @@
+body {
+    background: #fafafa;
+}
+
+/* FEED CONTAINER */
+.feed-container {
+    max-width: 600px;
+    margin: auto;
+}
+
+/* POST CARD */
+.post-card {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+/* HEADER */
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* AVATAR */
+.avatar {
+    width: 40px;
+    height: 40px;
+    background: #ccc;
+    border-radius: 50%;
+}
+
+/* CONTENT */
+.post-content {
+    color: #444;
+    margin-top: 10px;
+}
+
+/* ACTIONS */
+.post-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}

@@ -1,19 +1,96 @@
-{{#each blogs}}
+<div class="max-w-3xl mx-auto py-6">
 
-    <div class="card my-3">
-        <div class="card-body">
+    {{#each blogs}}
 
-            <h3>{{this.title}}</h3>
+    <div class="bg-white rounded-3xl shadow-lg mb-6 overflow-hidden border border-gray-100">
 
-            {{#if this.slug}}
-                <a href="/blogpost/{{this.slug}}" class="btn btn-primary">
-                    Read Blog
-                </a>
-            {{else}}
-                <p class="text-danger">Missing slug</p>
-            {{/if}}
+        <!-- Header -->
+        <div class="flex items-center p-4">
+
+            <div class="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500"></div>
+
+            <div class="ml-3">
+                <h6 class="font-bold text-gray-800 mb-0">
+                    Admin
+                </h6>
+
+                <small class="text-gray-500">
+                    Published Blog
+                </small>
+            </div>
 
         </div>
+
+        <!-- Fake Post Image -->
+        <div class="h-56 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+
+        <!-- Content -->
+        <div class="p-4">
+
+            <h3 class="font-bold text-2xl text-gray-800 mb-3">
+                {{this.title}}
+            </h3>
+
+            <p class="text-gray-600">
+                {{this.content}}
+            </p>
+
+            <!-- Actions -->
+            <div class="flex items-center justify-between mt-4">
+
+                <div class="flex gap-3">
+
+                    <!-- Like Button -->
+                    <form action="/blogpost/{{this.slug}}/like" method="POST">
+
+                        <button
+                            type="submit"
+                            class="px-4 py-2 rounded-full bg-red-50 hover:bg-red-100 text-red-500 font-medium">
+
+                            ❤️
+
+                            {{#if this.likes}}
+                                {{this.likes}}
+                            {{else}}
+                                0
+                            {{/if}}
+
+                        </button>
+
+                    </form>
+
+                    <!-- Comment Button -->
+                    <a
+                        href="/blogpost/{{this.slug}}"
+                        class="px-4 py-2 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-500 font-medium">
+
+                        💬
+
+                        {{#if this.comments.length}}
+                            {{this.comments.length}}
+                        {{else}}
+                            0
+                        {{/if}}
+
+                    </a>
+
+                </div>
+
+                <!-- Read More -->
+                <a
+                    href="/blogpost/{{this.slug}}"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-full font-medium transition">
+
+                    Read More →
+
+                </a>
+
+            </div>
+
+        </div>
+
     </div>
 
-{{/each}}
+    {{/each}}
+
+</div>

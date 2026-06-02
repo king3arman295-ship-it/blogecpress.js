@@ -1,29 +1,49 @@
-<div class="container">
-    <h1>Login</h1>
+<div class="max-w-md mx-auto mt-12">
 
-    <form action="/login" method="POST">
+    <div class="bg-white rounded-3xl shadow-lg p-8">
 
-        <div class="mb-3">
-            <label>Email</label>
-            <input
-                type="email"
-                name="email"
-                class="form-control"
-                required>
-        </div>
+        <h1 class="text-3xl font-bold text-center mb-6">
+            Welcome Back
+        </h1>
 
-        <div class="mb-3">
-            <label>Password</label>
-            <input
-                type="password"
-                name="password"
-                class="form-control"
-                required>
-        </div>
+        <form action="/login" method="POST">
 
-        <button type="submit" class="btn btn-primary">
-            Login
-        </button>
+            <div class="mb-4">
+                <label class="block mb-2 font-medium">
+                    Email
+                </label>
 
-    </form>
+                <input
+                    type="email"
+                    name="email"
+                    class="w-full border rounded-xl p-3"
+                    placeholder="Enter email"
+                    required>
+            </div>
+
+            <div class="mb-6">
+                <label class="block mb-2 font-medium">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    name="password"
+                    class="w-full border rounded-xl p-3"
+                    placeholder="Enter password"
+                    required>
+            </div>
+
+            <button
+                type="submit"
+                class="w-full bg-indigo-600 text-white p-3 rounded-xl hover:bg-indigo-700">
+
+                Login
+
+            </button>
+
+        </form>
+
+    </div>
+
 </div>

@@ -1,31 +1,17 @@
-<div class="container">
+<div class="container mt-4">
 
-```
-<div class="card mt-4">
+    <div class="card">
+        <div class="card-body">
 
-    <div class="card-body">
+            <h2>Dashboard</h2>
 
-        <h1>User Dashboard</h1>
+            <p><strong>Email:</strong> {{user.email}}</p>
+            <p><strong>Role:</strong> {{user.role}}</p>
 
-        <hr>
+            <a href="/blog" class="btn btn-primary">Go to Blogs</a>
+            <a href="/logout" class="btn btn-danger">Logout</a>
 
-        <h4>Email</h4>
-        <p>{{email}}</p>
-
-        <h4>Role</h4>
-        <p>{{role}}</p>
-
-        <a href="/blog" class="btn btn-primary">
-            View Blogs
-        </a>
-
-        <a href="/logout" class="btn btn-danger">
-            Logout
-        </a>
-
+        </div>
     </div>
-
-</div>
-```
 
 </div>

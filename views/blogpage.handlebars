@@ -1,54 +1,109 @@
-<div class="container">
+<div class="post-card">
 
-    <h1>{{title}}</h1>
-
-    <hr>
-
+    <h2>{{title}}</h2>
     <p>{{content}}</p>
 
     <hr>
 
-    <h3>Comments</h3>
+    <!-- COMMENT FORM -->
+    <h5>Add Comment</h5>
 
-    {{#each comments}}
+    {{#if user}}
 
-        <div class="card mb-2">
+        <form action="/blogpost/{{slug}}/comment" method="POST">
 
-            <div class="card-body">
-
-                <strong>{{this.userEmail}}</strong>
-
-                <p>{{this.text}}</p>
-
+            <div class="mb-3">
+                <textarea
+                    name="comment"
+                    class="form-control"
+                    placeholder="Write your comment..."
+                    required></textarea>
             </div>
 
-        </div>
+            <button class="btn btn-primary btn-sm">
+                Post Comment
+            </button>
 
-    {{/each}}
+        </form>
+
+    {{else}}
+
+        <p class="text-danger">
+            Please login to comment
+        </p>
+
+    {{/if}}
 
     <hr>
 
-    <h4>Add Comment</h4>
+    <!-- COMMENTS LIST -->
+    <h5>Comments</h5>
 
-    <form action="/blogpost/{{slug}}/comment" method="POST">
+    {{#if comments.length}}
 
-        <textarea
-            name="comment"
-            class="form-control"
-            rows="4"
-            required>
-        </textarea>
+   {{#each comments}}
 
-        <br>
+<div class="border rounded p-3 mb-3">
+
+    <strong>{{this.userEmail}}</strong>
+
+    <p>{{this.text}}</p>
+
+    <!-- Reply Form -->
+
+    {{#if ../user}}
+
+    <form
+        action="/blogpost/{{../slug}}/reply/{{this._id}}"
+        method="POST">
+
+        <input
+            type="text"
+            name="reply"
+            class="form-control mb-2"
+            placeholder="Reply...">
 
         <button
-            type="submit"
-            class="btn btn-primary">
+            class="btn btn-sm btn-secondary">
 
-            Post Comment
+            Reply
 
         </button>
 
     </form>
+
+    {{/if}}
+
+    <!-- Replies -->
+
+    <div class="ms-4 mt-3">
+
+        {{#each this.replies}}
+
+            <div class="border-start ps-3 mb-2">
+
+                <strong>
+                    {{this.userEmail}}
+                </strong>
+
+                <p class="mb-0">
+                    {{this.text}}
+                </p>
+
+            </div>
+
+        {{/each}}
+
+    </div>
+
+</div>
+
+{{/each}}
+
+    {{else}}
+
+        <p class="text-muted">No comments yet</p>
+
+    {{/if}}
 
 </div>
