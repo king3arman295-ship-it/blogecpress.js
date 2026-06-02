@@ -33,7 +33,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'static')));
 
 // Routes
-app.use('/', require('./routes/Blog'));
+app.use('/', require('./routes/blog'));
 app.use('/', require('./routes/auth'));
 
 app.listen(PORT, () => {
