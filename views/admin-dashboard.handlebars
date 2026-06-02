@@ -1,0 +1,43 @@
+<h1>Add New Blog</h1>
+
+<form action="/admin/add-blog" method="POST">
+
+    <div class="mb-3">
+        <label class="form-label">Title</label>
+
+        <input
+            type="text"
+            name="title"
+            class="form-control"
+            required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Slug</label>
+
+        <input
+            type="text"
+            name="slug"
+            class="form-control"
+            required>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Content</label>
+
+        <textarea
+            name="content"
+            rows="10"
+            class="form-control"
+            required></textarea>
+    </div>
+
+    <button
+        type="submit"
+        class="btn btn-success">
+
+        Publish Blog
+
+    </button>
+
+</form>

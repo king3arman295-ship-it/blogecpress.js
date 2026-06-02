@@ -1,31 +1,161 @@
 const express = require('express');
-const path = require('path');
-const blogs = require('../data/blogs');
+const jwt = require('jsonwebtoken');
+
+const Blog = require('../models/Blog');
+const User = require('../models/User');
+
+const { verifyToken, isAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
+
+// HOME
 router.get('/', (req, res) => {
-    // res.sendFile(path.join(__dirname, '../templates/index.html'));
-    res.render('home')
+    res.render('home');
 });
 
-router.get('/blog', (req, res) => {
-      res.render('bloghome', {
-        blogs:blogs
-      })
-    // res.sendFile(path.join(__dirname, '../templates/bloghome.html'));
+
+// BLOG LIST
+router.get('/blog', async (req, res) => {
+    try {
+
+        const blogs = await Blog.find().lean();
+
+        res.render('bloghome', {
+            blogs
+        });
+
+    } catch (err) {
+
+        console.log(err);
+        res.status(500).send('Server Error');
+
+    }
 });
 
-router.get('/blogpost/:slug', (req, res) => {
 
-    const myblog = blogs.filter(e => e.slug == req.params.slug);
+// SINGLE BLOG
+router.get('/blogpost/:slug', async (req, res) => {
+    try {
 
-    console.log(myblog);
-       res.render('blogpage', {
-        title:myblog[0].title,
-        content:myblog[0].content,
-      })
-    // res.sendFile(path.join(__dirname, '../templates/blogpage.html'));
+        const blog = await Blog.findOne({
+            slug: req.params.slug
+        }).lean();
+
+        if (!blog) {
+            return res.send('Blog not found');
+        }
+
+        res.render('blogpage', {
+            title: blog.title,
+            content: blog.content,
+            slug: blog.slug,
+            comments: blog.comments
+        });
+
+    } catch (err) {
+
+        console.log(err);
+        res.status(500).send('Server Error');
+
+    }
 });
+
+
+// ADD COMMENT
+router.post('/blogpost/:slug/comment', async (req, res) => {
+    try {
+
+        const token = req.cookies.token;
+
+        if (!token) {
+            return res.redirect('/login');
+        }
+
+        const decoded = jwt.verify(
+            token,
+            'secretkey123'
+        );
+
+        const user = await User.findById(
+            decoded.id
+        );
+
+        if (!user) {
+            return res.redirect('/login');
+        }
+
+        const blog = await Blog.findOne({
+            slug: req.params.slug
+        });
+
+        if (!blog) {
+            return res.send('Blog not found');
+        }
+
+        blog.comments.push({
+            userEmail: user.email,
+            text: req.body.comment
+        });
+
+        await blog.save();
+
+        res.redirect(
+            `/blogpost/${req.params.slug}`
+        );
+
+    } catch (err) {
+
+        console.log(err);
+        res.send('Error posting comment');
+
+    }
+});
+
+
+// ADMIN PAGE
+router.get(
+    '/admin',
+    verifyToken,
+    isAdmin,
+    (req, res) => {
+
+        res.render('admin');
+
+    }
+);
+
+
+// ADD BLOG
+router.post(
+    '/admin/add-blog',
+    verifyToken,
+    isAdmin,
+    async (req, res) => {
+
+        try {
+
+            const {
+                title,
+                slug,
+                content
+            } = req.body;
+
+            await Blog.create({
+                title,
+                slug,
+                content
+            });
+
+            res.redirect('/blog');
+
+        } catch (err) {
+
+            console.log(err);
+            res.send('Error creating blog');
+
+        }
+    }
+);
 
 module.exports = router;

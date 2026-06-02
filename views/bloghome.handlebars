@@ -1,7 +1,19 @@
-<div class="container">
 {{#each blogs}}
-  <div class="blog">
-    <a href="/blogpost/{{this.slug}}">{{this.title}}</a>
-  </div>
+
+    <div class="card my-3">
+        <div class="card-body">
+
+            <h3>{{this.title}}</h3>
+
+            {{#if this.slug}}
+                <a href="/blogpost/{{this.slug}}" class="btn btn-primary">
+                    Read Blog
+                </a>
+            {{else}}
+                <p class="text-danger">Missing slug</p>
+            {{/if}}
+
+        </div>
+    </div>
+
 {{/each}}
-</div>

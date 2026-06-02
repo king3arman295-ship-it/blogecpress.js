@@ -1,4 +1,54 @@
-<h2>{{tittle}}</h2>
-<p>
-    {{content}}
-</p>
+<div class="container">
+
+    <h1>{{title}}</h1>
+
+    <hr>
+
+    <p>{{content}}</p>
+
+    <hr>
+
+    <h3>Comments</h3>
+
+    {{#each comments}}
+
+        <div class="card mb-2">
+
+            <div class="card-body">
+
+                <strong>{{this.userEmail}}</strong>
+
+                <p>{{this.text}}</p>
+
+            </div>
+
+        </div>
+
+    {{/each}}
+
+    <hr>
+
+    <h4>Add Comment</h4>
+
+    <form action="/blogpost/{{slug}}/comment" method="POST">
+
+        <textarea
+            name="comment"
+            class="form-control"
+            rows="4"
+            required>
+        </textarea>
+
+        <br>
+
+        <button
+            type="submit"
+            class="btn btn-primary">
+
+            Post Comment
+
+        </button>
+
+    </form>
+
+</div>
