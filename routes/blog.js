@@ -20,12 +20,15 @@ router.get('/', (req, res) => {
 // ======================
 // BLOG LIST
 // ======================
+// ======================
+// BLOG LIST (PAGINATION SAFE)
+// ======================
 router.get('/blog', async (req, res) => {
     try {
 
         // ===== PAGINATION SETTINGS =====
         const page = parseInt(req.query.page) || 1;
-        const limit = 5; // blogs per page
+        const limit = 5;
         const skip = (page - 1) * limit;
 
         // ===== FETCH BLOGS =====
@@ -39,7 +42,7 @@ router.get('/blog', async (req, res) => {
         const totalBlogs = await Blog.countDocuments();
         const totalPages = Math.ceil(totalBlogs / limit);
 
-        // ===== USER LIKE CHECK (SAFE) =====
+        // ===== SAFE LIKE CHECK =====
         if (req.user) {
             blogs.forEach(blog => {
                 blog.isLiked = blog.likedBy?.some(
@@ -52,8 +55,6 @@ router.get('/blog', async (req, res) => {
         res.render('bloghome', {
             blogs,
             user: req.user || null,
-
-            // pagination data
             currentPage: page,
             totalPages
         });
@@ -292,7 +293,9 @@ router.post('/admin/add-blog', verifyToken, isAdmin, async (req, res) => {
 router.get('/admin/dashboard', verifyToken, isAdmin, async (req, res) => {
     try {
 
-        const blogs = await Blog.find().sort({ createdAt: -1 }).lean();
+        const blogs = await Blog.find()
+            .sort({ createdAt: -1 })
+            .lean();
 
         res.render('admin-dashboard', {
             user: req.user,
@@ -301,53 +304,9 @@ router.get('/admin/dashboard', verifyToken, isAdmin, async (req, res) => {
 
     } catch (err) {
         console.log(err);
-        res.send("Admin dashboard error");
+        res.send("Dashboard error");
     }
 });
-router.get('/admin/edit/:id', verifyToken, isAdmin, async (req, res) => {
-    try {
 
-        const blog = await Blog.findById(req.params.id).lean();
-
-        if (!blog) return res.send("Blog not found");
-
-        res.render('admin-edit', {
-            user: req.user,
-            blog
-        });
-
-    } catch (err) {
-        console.log(err);
-        res.send("Edit page error");
-    }
-});router.post('/admin/edit/:id', verifyToken, isAdmin, async (req, res) => {
-    try {
-
-        const { title, content } = req.body;
-
-        await Blog.findByIdAndUpdate(req.params.id, {
-            title,
-            content
-        });
-
-        res.redirect('/admin/dashboard');
-
-    } catch (err) {
-        console.log(err);
-        res.send("Update failed");
-    }
-});
-router.post('/admin/delete/:id', verifyToken, isAdmin, async (req, res) => {
-    try {
-
-        await Blog.findByIdAndDelete(req.params.id);
-
-        res.redirect('/admin/dashboard');
-
-    } catch (err) {
-        console.log(err);
-        res.send("Delete failed");
-    }
-});
 
 module.exports = router;

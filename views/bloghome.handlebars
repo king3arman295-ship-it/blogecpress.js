@@ -1,38 +1,38 @@
 <script>
 
-async function toggleLike(slug) {
+    async function toggleLike(slug) {
 
-    try {
+        try {
 
-        const response = await fetch(
-            `/blogpost/${slug}/like`,
-            {
-                method: 'POST'
+            const response = await fetch(
+                `/blogpost/${slug}/like`,
+                {
+                    method: 'POST'
+                }
+            );
+
+            const data = await response.json();
+
+            if (data.success) {
+
+                document.getElementById(
+                    `likes-${slug}`
+                ).innerText = data.likes;
+
+                document.getElementById(
+                    `heart-${slug}`
+                ).innerText =
+                    data.liked ? "❤️" : "🤍";
+
             }
-        );
 
-        const data = await response.json();
+        } catch (err) {
 
-        if (data.success) {
-
-            document.getElementById(
-                `likes-${slug}`
-            ).innerText = data.likes;
-
-            document.getElementById(
-                `heart-${slug}`
-            ).innerText =
-                data.liked ? "❤️" : "🤍";
+            console.log(err);
 
         }
 
-    } catch (err) {
-
-        console.log(err);
-
     }
-
-}
 
 </script>
 
@@ -118,10 +118,8 @@ async function toggleLike(slug) {
 
                 <!-- Read More -->
                 <a href="/blogpost/{{this.slug}}"
-                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-full font-medium transition">
-
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 md:px-5 md:py-2 rounded-full font-medium transition text-sm md:text-base whitespace-nowrap">
                     Read More →
-
                 </a>
 
             </div>
@@ -132,23 +130,21 @@ async function toggleLike(slug) {
 
     {{/each}}
     {{!-- ===================== --}}
-{{!-- PAGINATION UI --}}
-{{!-- ===================== --}}
+    {{!-- PAGINATION UI --}}
+    {{!-- ===================== --}}
 
-<div class="flex justify-center mt-8 gap-2 flex-wrap">
+    <div class="flex justify-center mt-8 gap-2 flex-wrap">
 
-    {{!-- PREVIOUS BUTTON --}}
-    {{#if (gt currentPage 1)}}
-        <a href="/blog?page={{subtract currentPage 1}}"
-           class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+        {{!-- PREVIOUS BUTTON --}}
+        {{#if (gt currentPage 1)}}
+        <a href="/blog?page={{subtract currentPage 1}}" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
             ← Prev
         </a>
-    {{/if}}
+        {{/if}}
 
-    {{!-- PAGE NUMBERS --}}
-    {{#each (array totalPages)}}
-        <a href="/blog?page={{this}}"
-           class="px-4 py-2 rounded-lg 
+        {{!-- PAGE NUMBERS --}}
+        {{#each (array totalPages)}}
+        <a href="/blog?page={{this}}" class="px-4 py-2 rounded-lg 
            {{#if (eq ../currentPage this)}}
                bg-indigo-600 text-white
            {{else}}
@@ -156,16 +152,15 @@ async function toggleLike(slug) {
            {{/if}}">
             {{this}}
         </a>
-    {{/each}}
+        {{/each}}
 
-    {{!-- NEXT BUTTON --}}
-    {{#if (lt currentPage totalPages)}}
-        <a href="/blog?page={{add currentPage 1}}"
-           class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+        {{!-- NEXT BUTTON --}}
+        {{#if (lt currentPage totalPages)}}
+        <a href="/blog?page={{add currentPage 1}}" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
             Next →
         </a>
-    {{/if}}
+        {{/if}}
 
-</div>
+    </div>
 
 </div>
