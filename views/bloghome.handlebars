@@ -43,33 +43,49 @@
                     <!-- Like Button -->
                     <form action="/blogpost/{{this.slug}}/like" method="POST">
 
-                        <button
-                            type="submit"
-                            class="px-4 py-2 rounded-full bg-red-50 hover:bg-red-100 text-red-500 font-medium">
+                        {{#if this.isLiked}}
+
+                        <button type="submit" class="px-4 py-2 rounded-full bg-red-500 text-white font-medium">
 
                             ❤️
 
                             {{#if this.likes}}
-                                {{this.likes}}
+                            {{this.likes}}
                             {{else}}
-                                0
+                            0
                             {{/if}}
 
                         </button>
 
+                        {{else}}
+
+                        <button type="submit"
+                            class="px-4 py-2 rounded-full bg-red-50 hover:bg-red-100 text-red-500 font-medium">
+
+                            🤍
+
+                            {{#if this.likes}}
+                            {{this.likes}}
+                            {{else}}
+                            0
+                            {{/if}}
+
+                        </button>
+
+                        {{/if}}
+
                     </form>
 
                     <!-- Comment Button -->
-                    <a
-                        href="/blogpost/{{this.slug}}"
+                    <a href="/blogpost/{{this.slug}}"
                         class="px-4 py-2 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-500 font-medium">
 
                         💬
 
                         {{#if this.comments.length}}
-                            {{this.comments.length}}
+                        {{this.comments.length}}
                         {{else}}
-                            0
+                        0
                         {{/if}}
 
                     </a>
@@ -77,8 +93,7 @@
                 </div>
 
                 <!-- Read More -->
-                <a
-                    href="/blogpost/{{this.slug}}"
+                <a href="/blogpost/{{this.slug}}"
                     class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-full font-medium transition">
 
                     Read More →

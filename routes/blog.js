@@ -24,6 +24,18 @@ router.get('/blog', async (req, res) => {
     try {
         const blogs = await Blog.find().lean();
 
+        if (req.user) {
+
+            blogs.forEach(blog => {
+
+                blog.isLiked = blog.likedBy?.some(
+                    id => id.toString() === req.user.id
+                );
+
+            });
+
+        }
+
         res.render('bloghome', {
             blogs,
             user: req.user || null
@@ -98,32 +110,58 @@ router.get('/admin', verifyToken, isAdmin, (req, res) => {
     res.render('admin', { user: req.user });
 });
 
-router.post('/blogpost/:slug/like', async (req, res) => {
+router.post(
+    '/blogpost/:slug/like',
+    verifyToken,
+    async (req, res) => {
 
-    try {
+        try {
 
-        const blog = await Blog.findOne({
-            slug: req.params.slug
-        });
+            const blog = await Blog.findOne({
+                slug: req.params.slug
+            });
 
-        if (!blog) {
-            return res.send('Blog not found');
+            if (!blog) {
+                return res.send('Blog not found');
+            }
+
+            if (!blog.likedBy) {
+                blog.likedBy = [];
+            }
+
+            const userId = req.user.id;
+
+            const likedIndex = blog.likedBy.findIndex(
+                id => id.toString() === userId
+            );
+
+            if (likedIndex === -1) {
+
+                // LIKE
+                blog.likes += 1;
+                blog.likedBy.push(userId);
+
+            } else {
+
+                // UNLIKE
+                blog.likes = Math.max(0, blog.likes - 1);
+                blog.likedBy.splice(likedIndex, 1);
+
+            }
+
+            await blog.save();
+
+            res.redirect('/blog');
+
+        } catch (err) {
+
+            console.log(err);
+            res.send('Like failed');
+
         }
 
-        blog.likes += 1;
-
-        await blog.save();
-
-        res.redirect('/blog');
-
-    } catch (err) {
-
-        console.log(err);
-        res.send('Like failed');
-
     }
-
-});
+);
 router.post(
     '/blogpost/:slug/reply/:commentId',
     verifyToken,

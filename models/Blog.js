@@ -35,10 +35,17 @@ const BlogSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    likes: {
+   likes: {
     type: Number,
     default: 0
 },
+
+likedBy: [
+    {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }
+],
     comments: [CommentSchema]
     
 });
