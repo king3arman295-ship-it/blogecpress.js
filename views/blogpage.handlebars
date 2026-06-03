@@ -1,98 +1,178 @@
-<div class="max-w-4xl mx-auto">
+<style>
+    /* MOBILE RESPONSIVE FIXES */
 
-<!-- Blog Card -->
-<div class="bg-white rounded-3xl shadow-lg overflow-hidden">
+    @media (max-width: 768px) {
 
-    <!-- Header -->
-    <div class="p-8 border-b">
+        .max-w-4xl {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
 
-        <div class="flex items-center gap-3 mb-4">
+        .p-8 {
+            padding: 1rem !important;
+        }
 
-            <div class="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold">
-                A
+        h1.text-4xl {
+            font-size: 2rem !important;
+            line-height: 1.3;
+        }
+
+        h3.text-3xl {
+            font-size: 1.6rem !important;
+        }
+
+        .text-lg {
+            font-size: 1rem !important;
+        }
+
+        .leading-8 {
+            line-height: 1.7 !important;
+        }
+
+        .ml-12 {
+            margin-left: 0 !important;
+        }
+
+        .reply-box {
+            width: 100%;
+        }
+
+        .reply-form-row {
+            flex-direction: column;
+        }
+
+        .reply-form-row button {
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        textarea,
+        input {
+            font-size: 16px;
+        }
+
+        .emoji-btn,
+        .reply-emoji {
+            width: auto !important;
+        }
+
+        .w-12.h-12 {
+            width: 42px !important;
+            height: 42px !important;
+        }
+
+        .w-10.h-10 {
+            width: 36px !important;
+            height: 36px !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+
+        h1.text-4xl {
+            font-size: 1.6rem !important;
+        }
+
+        h3.text-3xl {
+            font-size: 1.4rem !important;
+        }
+
+        .emoji-btn,
+        .reply-emoji {
+            padding: 4px 8px !important;
+            font-size: 14px;
+        }
+    }
+</style>
+<div class="max-w-4xl mx-auto px-2 md:px-0">
+
+    <!-- Blog Card -->
+    <div class="bg-white rounded-3xl shadow-lg overflow-hidden">
+
+        <!-- Header -->
+        <div class="p-8 border-b">
+
+            <div class="flex items-center gap-3 mb-4">
+
+                <div class="w-12 h-12 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold">
+                    A
+                </div>
+
+                <div>
+                    <h6 class="font-semibold mb-0">Admin</h6>
+                    <small class="text-gray-500">Blog Post</small>
+                </div>
+
             </div>
 
-            <div>
-                <h6 class="font-semibold mb-0">Admin</h6>
-                <small class="text-gray-500">Blog Post</small>
+            <h1 class="text-4xl font-bold text-gray-800">
+                {{title}}
+            </h1>
+
+        </div>
+
+        <!-- Content -->
+        <div class="p-8">
+
+            <div class="text-lg leading-8 text-gray-700 whitespace-pre-line">
+                {{content}}
             </div>
 
         </div>
 
-        <h1 class="text-4xl font-bold text-gray-800">
-            {{title}}
-        </h1>
-
     </div>
 
-    <!-- Content -->
-    <div class="p-8">
 
-        <div class="text-lg leading-8 text-gray-700 whitespace-pre-line">
-            {{content}}
+    <!-- Comment Form -->
+    <div class="bg-white rounded-3xl shadow-lg mt-8 p-8">
+
+        <h3 class="text-2xl font-bold mb-4">Leave a Comment</h3>
+
+        {{#if user}}
+
+        <!-- Emoji Buttons -->
+        <div class="flex gap-2 mb-3 flex-wrap">
+
+            <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">😀</button>
+            <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">😂</button>
+            <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">😍</button>
+            <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">🔥</button>
+            <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">❤️</button>
+            <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">👍</button>
+
         </div>
 
+        <form action="/blogpost/{{slug}}/comment" method="POST">
+
+            <textarea id="commentBox" name="comment" rows="4"
+                class="w-full border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Write your thoughts... 😊" required></textarea>
+
+            <button type="submit" class="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl">
+
+                Post Comment
+
+            </button>
+
+        </form>
+
+        {{else}}
+
+        <div class="bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl">
+            Please login to comment.
+        </div>
+
+        {{/if}}
+
     </div>
 
-</div>
 
+    <!-- Comments -->
+    <div class="mt-8">
 
-<!-- Comment Form -->
-<div class="bg-white rounded-3xl shadow-lg mt-8 p-8">
+        <h3 class="text-3xl font-bold mb-6">Comments</h3>
 
-    <h3 class="text-2xl font-bold mb-4">Leave a Comment</h3>
-
-    {{#if user}}
-
-    <!-- Emoji Buttons -->
-    <div class="flex gap-2 mb-3 flex-wrap">
-
-        <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">😀</button>
-        <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">😂</button>
-        <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">😍</button>
-        <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">🔥</button>
-        <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">❤️</button>
-        <button type="button" class="emoji-btn bg-gray-100 px-3 py-1 rounded">👍</button>
-
-    </div>
-
-    <form action="/blogpost/{{slug}}/comment" method="POST">
-
-        <textarea
-            id="commentBox"
-            name="comment"
-            rows="4"
-            class="w-full border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="Write your thoughts... 😊"
-            required></textarea>
-
-        <button
-            type="submit"
-            class="mt-4 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl">
-
-            Post Comment
-
-        </button>
-
-    </form>
-
-    {{else}}
-
-    <div class="bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl">
-        Please login to comment.
-    </div>
-
-    {{/if}}
-
-</div>
-
-
-<!-- Comments -->
-<div class="mt-8">
-
-    <h3 class="text-3xl font-bold mb-6">Comments</h3>
-
-    {{#if comments.length}}
+        {{#if comments.length}}
 
         {{#each comments}}
 
@@ -136,15 +216,12 @@
 
                 </div>
 
-                <div class="flex gap-2">
+                <div class="flex gap-2 reply-form-row">
 
-                    <input
-                        type="text"
-                        name="reply"
-                        class="flex-1 border rounded-xl px-4 py-2 reply-box"
+                    <input type="text" name="reply" class="flex-1 border rounded-xl px-4 py-2 reply-box"
                         placeholder="Reply to comment... 😊">
 
-                    <button class="bg-slate-700 text-white px-4 rounded-xl">
+                    <button class="bg-slate-700 text-white px-4 py-2 rounded-xl">
                         Reply
                     </button>
 
@@ -183,38 +260,38 @@
 
         {{/each}}
 
-    {{else}}
+        {{else}}
 
         <div class="bg-white rounded-2xl shadow p-6 text-center text-gray-500">
             No comments yet. Be the first to comment!
         </div>
 
-    {{/if}}
+        {{/if}}
 
-</div>
+    </div>
 
 </div>
 
 <!-- SCRIPT -->
 <script>
 
-// COMMENT EMOJIS
-const commentBox = document.getElementById("commentBox");
+    // COMMENT EMOJIS
+    const commentBox = document.getElementById("commentBox");
 
-document.querySelectorAll(".emoji-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-        commentBox.value += btn.innerText;
-        commentBox.focus();
+    document.querySelectorAll(".emoji-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            commentBox.value += btn.innerText;
+            commentBox.focus();
+        });
     });
-});
 
-// REPLY EMOJIS
-document.querySelectorAll(".reply-emoji").forEach(btn => {
-    btn.addEventListener("click", () => {
-        const input = btn.closest("form").querySelector(".reply-box");
-        input.value += btn.innerText;
-        input.focus();
+    // REPLY EMOJIS
+    document.querySelectorAll(".reply-emoji").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const input = btn.closest("form").querySelector(".reply-box");
+            input.value += btn.innerText;
+            input.focus();
+        });
     });
-});
 
 </script>
