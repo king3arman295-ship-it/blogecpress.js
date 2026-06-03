@@ -142,8 +142,7 @@
 
         </div>
 
-        <form action="/blogpost/{{slug}}/comment" method="POST">
-
+       <form id="commentForm">
             <textarea id="commentBox" name="comment" rows="4"
                 class="w-full border border-gray-300 rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 placeholder="Write your thoughts... 😊" required></textarea>
@@ -168,7 +167,7 @@
 
 
     <!-- Comments -->
-    <div class="mt-8">
+    <div class="mt-8" id="commentsContainer">
 
         <h3 class="text-3xl font-bold mb-6">Comments</h3>
 
@@ -202,7 +201,10 @@
             <!-- Reply Form -->
             {{#if ../user}}
 
-            <form action="/blogpost/{{../slug}}/reply/{{this._id}}" method="POST" class="mt-4 ml-12">
+            <form
+    class="mt-4 ml-12 replyForm"
+    data-slug="{{../slug}}"
+    data-comment-id="{{this._id}}">
 
                 <!-- Emoji Row -->
                 <div class="flex gap-2 mb-2 flex-wrap">
@@ -275,23 +277,223 @@
 <!-- SCRIPT -->
 <script>
 
-    // COMMENT EMOJIS
-    const commentBox = document.getElementById("commentBox");
+// =====================
+// COMMENT EMOJIS
+// =====================
 
-    document.querySelectorAll(".emoji-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-            commentBox.value += btn.innerText;
-            commentBox.focus();
-        });
+const commentBox = document.getElementById("commentBox");
+
+document.querySelectorAll(".emoji-btn").forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+        commentBox.value += btn.innerText;
+        commentBox.focus();
+
     });
 
-    // REPLY EMOJIS
-    document.querySelectorAll(".reply-emoji").forEach(btn => {
-        btn.addEventListener("click", () => {
-            const input = btn.closest("form").querySelector(".reply-box");
-            input.value += btn.innerText;
-            input.focus();
-        });
+});
+
+
+// =====================
+// REPLY EMOJIS
+// =====================
+
+document.querySelectorAll(".reply-emoji").forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+        const input =
+            btn.closest("form")
+               .querySelector(".reply-box");
+
+        input.value += btn.innerText;
+
+        input.focus();
+
     });
+
+});
+
+
+// =====================
+// AJAX COMMENT
+// =====================
+
+const commentForm =
+    document.getElementById("commentForm");
+
+if(commentForm){
+
+commentForm.addEventListener(
+    "submit",
+    async function(e){
+
+        e.preventDefault();
+
+        const comment =
+            commentBox.value;
+
+        const response =
+            await fetch(
+                "/blogpost/{{slug}}/comment",
+                {
+                    method:"POST",
+                    headers:{
+                        "Content-Type":
+                        "application/json"
+                    },
+                    body:JSON.stringify({
+                        comment
+                    })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if(data.success){
+
+            const html = `
+            <div class="bg-white rounded-2xl shadow-md p-6 mb-6">
+
+                <div class="flex items-start gap-3">
+
+                    <div class="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center">
+                        👤
+                    </div>
+
+                    <div class="flex-1">
+
+                        <h6 class="font-semibold text-gray-800">
+                            ${data.userEmail}
+                        </h6>
+
+                        <p class="mt-2 text-gray-700">
+                            ${data.text}
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+            `;
+
+            document
+                .getElementById(
+                    "commentsContainer"
+                )
+                .insertAdjacentHTML(
+                    "beforeend",
+                    html
+                );
+
+            commentBox.value = "";
+
+        }
+
+    }
+);
+
+}
+
+
+// =====================
+// AJAX REPLIES
+// =====================
+
+document.querySelectorAll(".replyForm").forEach(form => {
+
+    form.addEventListener(
+        "submit",
+        async function(e){
+
+            e.preventDefault();
+
+            const slug =
+                form.dataset.slug;
+
+            const commentId =
+                form.dataset.commentId;
+
+            const replyInput =
+                form.querySelector(".reply-box");
+
+            const reply =
+                replyInput.value;
+
+            if(!reply.trim()) return;
+
+            const response =
+                await fetch(
+                    `/blogpost/${slug}/reply/${commentId}`,
+                    {
+                        method:"POST",
+                        headers:{
+                            "Content-Type":
+                            "application/json"
+                        },
+                        body:JSON.stringify({
+                            reply
+                        })
+                    }
+                );
+
+            const data =
+                await response.json();
+
+            if(data.success){
+
+                const repliesContainer =
+                    form.parentElement.querySelector(".space-y-3");
+
+                const replyHtml = `
+                <div class="bg-slate-50 border-l-4 border-indigo-500 p-4 rounded-r-xl">
+
+                    <strong class="text-indigo-600">
+                        ${data.userEmail}
+                    </strong>
+
+                    <p class="mt-1 text-gray-700">
+                        ${data.text}
+                    </p>
+
+                </div>
+                `;
+
+                if(repliesContainer){
+
+                    repliesContainer.insertAdjacentHTML(
+                        "beforeend",
+                        replyHtml
+                    );
+
+                } else {
+
+                    const wrapper =
+                    document.createElement("div");
+
+                    wrapper.className =
+                    "ml-12 mt-6 space-y-3";
+
+                    wrapper.innerHTML =
+                    replyHtml;
+
+                    form.insertAdjacentElement(
+                        "afterend",
+                        wrapper
+                    );
+
+                }
+
+                replyInput.value = "";
+
+            }
+
+        }
+    );
+
+});
 
 </script>

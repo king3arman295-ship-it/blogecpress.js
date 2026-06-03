@@ -1,3 +1,40 @@
+<script>
+
+async function toggleLike(slug) {
+
+    try {
+
+        const response = await fetch(
+            `/blogpost/${slug}/like`,
+            {
+                method: 'POST'
+            }
+        );
+
+        const data = await response.json();
+
+        if (data.success) {
+
+            document.getElementById(
+                `likes-${slug}`
+            ).innerText = data.likes;
+
+            document.getElementById(
+                `heart-${slug}`
+            ).innerText =
+                data.liked ? "❤️" : "🤍";
+
+        }
+
+    } catch (err) {
+
+        console.log(err);
+
+    }
+
+}
+
+</script>
 <div class="max-w-3xl mx-auto py-6">
 
     {{#each blogs}}
@@ -41,40 +78,26 @@
                 <div class="flex gap-3">
 
                     <!-- Like Button -->
-                    <form action="/blogpost/{{this.slug}}/like" method="POST">
+                    <button type="button" onclick="toggleLike('{{this.slug}}')"
+                        class="px-4 py-2 rounded-full bg-red-50 hover:bg-red-100 text-red-500 font-medium">
 
-                        {{#if this.isLiked}}
-
-                        <button type="submit" class="px-4 py-2 rounded-full bg-red-500 text-white font-medium">
-
+                        <span id="heart-{{this.slug}}">
+                            {{#if this.isLiked}}
                             ❤️
-
-                            {{#if this.likes}}
-                            {{this.likes}}
                             {{else}}
-                            0
-                            {{/if}}
-
-                        </button>
-
-                        {{else}}
-
-                        <button type="submit"
-                            class="px-4 py-2 rounded-full bg-red-50 hover:bg-red-100 text-red-500 font-medium">
-
                             🤍
+                            {{/if}}
+                        </span>
 
+                        <span id="likes-{{this.slug}}">
                             {{#if this.likes}}
                             {{this.likes}}
                             {{else}}
                             0
                             {{/if}}
+                        </span>
 
-                        </button>
-
-                        {{/if}}
-
-                    </form>
+                    </button>
 
                     <!-- Comment Button -->
                     <a href="/blogpost/{{this.slug}}"

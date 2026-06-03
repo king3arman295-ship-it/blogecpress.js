@@ -94,7 +94,11 @@ router.post('/blogpost/:slug/comment', verifyToken, async (req, res) => {
 
         await blog.save();
 
-        res.redirect(`/blogpost/${req.params.slug}`);
+        res.json({
+            success: true,
+            userEmail: user.email,
+            text: req.body.comment
+        });
 
     } catch (err) {
         console.log(err);
@@ -122,41 +126,50 @@ router.post(
             });
 
             if (!blog) {
-                return res.send('Blog not found');
+                return res.json({
+                    success: false
+                });
             }
 
-            if (!blog.likedBy) {
+            // Safety for old blog documents
+            if (!Array.isArray(blog.likedBy)) {
                 blog.likedBy = [];
             }
 
             const userId = req.user.id;
 
-            const likedIndex = blog.likedBy.findIndex(
+            const alreadyLiked = blog.likedBy.some(
                 id => id.toString() === userId
             );
 
-            if (likedIndex === -1) {
+            if (alreadyLiked) {
 
-                // LIKE
-                blog.likes += 1;
-                blog.likedBy.push(userId);
+                blog.likes = Math.max(0, blog.likes - 1);
+
+                blog.likedBy = blog.likedBy.filter(
+                    id => id.toString() !== userId
+                );
 
             } else {
 
-                // UNLIKE
-                blog.likes = Math.max(0, blog.likes - 1);
-                blog.likedBy.splice(likedIndex, 1);
+                blog.likes += 1;
+
+                blog.likedBy.push(userId);
 
             }
-
             await blog.save();
 
-            res.redirect('/blog');
+            return res.json({
+                success: true,
+                likes: blog.likes,
+                liked: !alreadyLiked
+            });
 
         } catch (err) {
 
-            console.log(err);
-            res.send('Like failed');
+            console.log('LIKE ERROR:', err);
+
+            return res.redirect('/blog');
 
         }
 
@@ -177,9 +190,21 @@ router.post(
                 slug: req.params.slug
             });
 
+            if (!blog) {
+                return res.json({
+                    success: false
+                });
+            }
+
             const comment = blog.comments.id(
                 req.params.commentId
             );
+
+            if (!comment) {
+                return res.json({
+                    success: false
+                });
+            }
 
             comment.replies.push({
                 userEmail: user.email,
@@ -188,14 +213,19 @@ router.post(
 
             await blog.save();
 
-            res.redirect(
-                `/blogpost/${req.params.slug}`
-            );
+            res.json({
+                success: true,
+                userEmail: user.email,
+                text: req.body.reply
+            });
 
         } catch (err) {
 
             console.log(err);
-            res.send('Reply failed');
+
+            res.json({
+                success: false
+            });
 
         }
 
