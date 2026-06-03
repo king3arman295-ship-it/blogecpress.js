@@ -17,10 +17,29 @@ mongoose.connect(process.env.MONGO_URI)
 .then(() => console.log("MongoDB Connected"))
 .catch(err => console.log(err));
 
-// Handlebars
+
+// ========================
+// HANDLEBARS
+// ========================
 app.engine('handlebars', engine({
     helpers: {
-        eq: (a, b) => a === b
+
+        // existing helper
+        eq: (a, b) => a === b,
+
+        // ========================
+        // PAGINATION HELPERS (SAFE ADDITION)
+        // ========================
+        add: (a, b) => a + b,
+        subtract: (a, b) => a - b,
+
+        gt: (a, b) => a > b,
+        lt: (a, b) => a < b,
+
+        // create array [1..n] for page numbers
+        array: (n) => {
+            return Array.from({ length: n }, (_, i) => i + 1);
+        }
     }
 }));
 
@@ -32,7 +51,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ ADDED HERE (after cookieParser as you said)
+// ✅ ADDED HERE
 app.use(verifyToken);
 
 // Static

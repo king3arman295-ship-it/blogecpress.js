@@ -35,6 +35,7 @@ async function toggleLike(slug) {
 }
 
 </script>
+
 <div class="max-w-3xl mx-auto py-6">
 
     {{#each blogs}}
@@ -130,5 +131,41 @@ async function toggleLike(slug) {
     </div>
 
     {{/each}}
+    {{!-- ===================== --}}
+{{!-- PAGINATION UI --}}
+{{!-- ===================== --}}
+
+<div class="flex justify-center mt-8 gap-2 flex-wrap">
+
+    {{!-- PREVIOUS BUTTON --}}
+    {{#if (gt currentPage 1)}}
+        <a href="/blog?page={{subtract currentPage 1}}"
+           class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+            ← Prev
+        </a>
+    {{/if}}
+
+    {{!-- PAGE NUMBERS --}}
+    {{#each (array totalPages)}}
+        <a href="/blog?page={{this}}"
+           class="px-4 py-2 rounded-lg 
+           {{#if (eq ../currentPage this)}}
+               bg-indigo-600 text-white
+           {{else}}
+               bg-gray-200 hover:bg-gray-300
+           {{/if}}">
+            {{this}}
+        </a>
+    {{/each}}
+
+    {{!-- NEXT BUTTON --}}
+    {{#if (lt currentPage totalPages)}}
+        <a href="/blog?page={{add currentPage 1}}"
+           class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">
+            Next →
+        </a>
+    {{/if}}
+
+</div>
 
 </div>

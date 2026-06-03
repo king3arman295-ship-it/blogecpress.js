@@ -1,233 +1,227 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>BlogExpress</title>
 
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-   <style>
+    <style>
+        body {
+            background: #f1f5f9;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-    body{
-        background:#f1f5f9;
-        min-height:100vh;
-        overflow-x:hidden;
-    }
+        .glass-nav {
+            background: rgba(255, 255, 255, .85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #e5e7eb;
+        }
 
-    .glass-nav{
-        background:rgba(255,255,255,.85);
-        backdrop-filter:blur(12px);
-        border-bottom:1px solid #e5e7eb;
-    }
+        .brand-logo {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #4f46e5;
+            text-decoration: none;
+            white-space: nowrap;
+        }
 
-    .brand-logo{
-        font-size:1.6rem;
-        font-weight:700;
-        color:#4f46e5;
-        text-decoration:none;
-        white-space:nowrap;
-    }
+        .nav-link-custom {
+            color: #374151;
+            text-decoration: none;
+            font-weight: 500;
+            transition: .3s;
+            white-space: nowrap;
+        }
 
-    .nav-link-custom{
-        color:#374151;
-        text-decoration:none;
-        font-weight:500;
-        transition:.3s;
-        white-space:nowrap;
-    }
+        .nav-link-custom:hover {
+            color: #4f46e5;
+        }
 
-    .nav-link-custom:hover{
-        color:#4f46e5;
-    }
+        .btn-login {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
 
-    .btn-login{
-        background:#4f46e5;
-        color:white;
-        border:none;
-        border-radius:10px;
-        padding:8px 16px;
-        text-decoration:none;
-        white-space:nowrap;
-    }
+        .btn-login:hover {
+            background: #4338ca;
+            color: white;
+        }
 
-    .btn-login:hover{
-        background:#4338ca;
-        color:white;
-    }
+        .btn-logout {
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
 
-    .btn-logout{
-        background:#ef4444;
-        color:white;
-        border:none;
-        border-radius:10px;
-        padding:8px 16px;
-        text-decoration:none;
-        white-space:nowrap;
-    }
+        .btn-logout:hover {
+            background: #dc2626;
+            color: white;
+        }
 
-    .btn-logout:hover{
-        background:#dc2626;
-        color:white;
-    }
+        .main-wrapper {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
 
-    .main-wrapper{
-        max-width:1200px;
-        margin:auto;
-        padding:20px;
-    }
+        footer {
+            margin-top: 80px;
+        }
 
-    footer{
-        margin-top:80px;
-    }
-
-    /* =========================
+        /* =========================
        RESPONSIVE FIX (ADDED ONLY)
     ========================= */
 
-    @media (max-width: 768px) {
+        @media (max-width: 768px) {
 
-        .d-flex.justify-content-between{
-            flex-direction: column;
-            gap: 10px;
-            align-items: flex-start;
+            .d-flex.justify-content-between {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+
+            .d-flex.align-items-center.gap-3 {
+                flex-wrap: wrap;
+                gap: 10px !important;
+            }
+
+            .nav-link-custom,
+            .btn-login,
+            .btn-logout {
+                font-size: 14px;
+            }
+
+            .brand-logo {
+                font-size: 1.4rem;
+            }
         }
 
-        .d-flex.align-items-center.gap-3{
-            flex-wrap: wrap;
-            gap: 10px !important;
+        @media (max-width: 480px) {
+
+            .main-wrapper {
+                padding: 12px;
+            }
+
+            .glass-nav .container {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            .btn-login,
+            .btn-logout {
+                padding: 6px 10px;
+                font-size: 13px;
+            }
         }
-
-        .nav-link-custom,
-        .btn-login,
-        .btn-logout{
-            font-size: 14px;
-        }
-
-        .brand-logo{
-            font-size: 1.4rem;
-        }
-    }
-
-    @media (max-width: 480px) {
-
-        .main-wrapper{
-            padding: 12px;
-        }
-
-        .glass-nav .container{
-            padding-left: 10px;
-            padding-right: 10px;
-        }
-
-        .btn-login,
-        .btn-logout{
-            padding: 6px 10px;
-            font-size: 13px;
-        }
-    }
-
-</style>
+    </style>
 
 </head>
+
 <body>
 
-<!-- NAVBAR -->
+    <!-- NAVBAR -->
 
-<nav class="glass-nav shadow-sm">
+    <nav class="glass-nav shadow-sm">
 
-    <div class="container">
+        <div class="container">
 
-        <div class="d-flex justify-content-between align-items-center py-3">
+            <div class="d-flex justify-content-between align-items-center py-3">
 
-            <a href="/" class="brand-logo">
-                BlogExpress
-            </a>
-
-            <div class="d-flex align-items-center gap-3">
-
-                <a href="/" class="nav-link-custom">
-                    Home
+                <a href="/" class="brand-logo">
+                    BlogExpress
                 </a>
 
-                <a href="/blog" class="nav-link-custom">
-                    Feed
-                </a>
+                <div class="d-flex align-items-center gap-3">
 
-                {{#if user}}
-
-                    <a href="/dashboard"
-                       class="nav-link-custom">
-                        Dashboard
+                    <a href="/" class="nav-link-custom">
+                        Home
                     </a>
 
+                    <a href="/blog" class="nav-link-custom">
+                        Feed
+                    </a>
+
+                    {{#if user}}
+
+                    <a href="/dashboard" class="nav-link-custom">
+                        Profile
+                    </a>
+                  
                     {{#if (eq user.role "admin")}}
 
-                    <a href="/admin"
-                       class="nav-link-custom text-warning">
+                    <a href="/admin" class="nav-link-custom text-warning">
                         Admin
                     </a>
 
                     {{/if}}
 
-                    <a href="/logout"
-                       class="btn-logout">
+                    <a href="/logout" class="btn-logout">
                         Logout
                     </a>
 
-                {{else}}
+                    {{else}}
 
-                    <a href="/login"
-                       class="nav-link-custom">
+                    <a href="/login" class="nav-link-custom">
                         Login
                     </a>
 
-                    <a href="/register"
-                       class="btn-login">
+                    <a href="/register" class="btn-login">
                         Register
                     </a>
 
-                {{/if}}
+                    {{/if}}
+
+                </div>
 
             </div>
 
         </div>
 
-    </div>
+    </nav>
 
-</nav>
+    <!-- CONTENT -->
+    <div class="main-wrapper">
 
-<!-- CONTENT -->
-<div class="main-wrapper">
-
-    {{{body}}}
-
-</div>
-
-<!-- FOOTER -->
-<footer class="bg-dark text-white">
-
-    <div class="container py-4 text-center">
-
-        <h5>BlogExpress</h5>
-
-        <p class="text-secondary mb-0">
-            Modern Blogging Platform built with Express.js & MongoDB
-        </p>
+        {{{body}}}
 
     </div>
 
-</footer>
+    <!-- FOOTER -->
+    <footer class="bg-dark text-white">
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+        <div class="container py-4 text-center">
+
+            <h5>BlogExpress</h5>
+
+            <p class="text-secondary mb-0">
+                Modern Blogging Platform built with Express.js & MongoDB
+            </p>
+
+        </div>
+
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
+
 </html>
