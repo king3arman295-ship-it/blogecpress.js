@@ -128,8 +128,24 @@ router.post('/blogpost/:slug/comment', verifyToken, async (req, res) => {
 // ======================
 // ADMIN PAGE
 // ======================
-router.get('/admin', verifyToken, isAdmin, (req, res) => {
-    res.render('admin', { user: req.user });
+router.get('/admin', verifyToken, isAdmin, async (req, res) => {
+    try {
+
+        const blogs = await Blog.find()
+            .sort({ createdAt: -1 })
+            .lean();
+
+        res.render('admin', {
+            user: req.user,
+            blogs
+        });
+
+    } catch (err) {
+
+        console.log(err);
+        res.send("Admin page error");
+
+    }
 });
 
 router.post(
@@ -305,6 +321,51 @@ router.get('/admin/dashboard', verifyToken, isAdmin, async (req, res) => {
     } catch (err) {
         console.log(err);
         res.send("Dashboard error");
+    }
+});
+router.post('/admin/delete/:id', verifyToken, isAdmin, async (req, res) => {
+    try {
+
+        await Blog.findByIdAndDelete(req.params.id);
+
+        res.redirect('/admin/dashboard');
+
+    } catch (err) {
+        console.log(err);
+        res.send("Delete failed");
+    }
+});
+router.get('/admin/edit/:id', verifyToken, isAdmin, async (req, res) => {
+    try {
+
+        const blog = await Blog.findById(req.params.id).lean();
+
+        res.render('edit-blog', {
+            blog,
+            user: req.user
+        });
+
+    } catch (err) {
+        console.log(err);
+        res.send("Edit page error");
+    }
+});
+router.post('/admin/update/:id', verifyToken, isAdmin, async (req, res) => {
+    try {
+
+        const { title, slug, content } = req.body;
+
+        await Blog.findByIdAndUpdate(req.params.id, {
+            title,
+            slug,
+            content
+        });
+
+        res.redirect('/admin/dashboard');
+
+    } catch (err) {
+        console.log(err);
+        res.send("Update failed");
     }
 });
 
